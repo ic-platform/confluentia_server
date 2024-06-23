@@ -5,7 +5,7 @@ export class Administrator {
     private supabase: any;
 
     constructor (private Supabase: Supabase) {
-        this.supabase = Supabase.create();
+        this.supabase = Supabase.createdClient();
      }
 
     /* Function to generate a random password:

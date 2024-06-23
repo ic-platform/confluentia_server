@@ -4,7 +4,7 @@ export class Course {
     private supabase: any;
 
     constructor(private Supabase: Supabase) {
-        this.supabase = Supabase.create();
+        this.supabase = Supabase.createdClient();
     }
 
     /* Creating a Course:

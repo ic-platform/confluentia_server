@@ -4,7 +4,7 @@ export class Student {
     private supabase: any;
 
     constructor(private Supabase: Supabase) {
-        this.supabase = Supabase.create();
+        this.supabase = Supabase.createdClient();
     }
 
     /* Creating a Student:
