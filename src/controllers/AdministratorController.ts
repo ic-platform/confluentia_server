@@ -1,10 +1,10 @@
 import axios from "axios";
-import { Supabase } from "./supabase";
+import { SupabaseService } from "../services/SupabaseService";
 
-export class Administrator {
+export class AdministratorController {
     private supabase: any;
 
-    constructor (private Supabase: Supabase) {
+    constructor (private Supabase: SupabaseService) {
         this.supabase = Supabase.createdClient();
      }
 

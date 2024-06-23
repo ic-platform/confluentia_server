@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 
-export class Supabase {
+export class SupabaseService {
     /* Global Variables:
     ============================================================================*/
         private supabaseUrl: string;

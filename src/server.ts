@@ -4,11 +4,6 @@
     import cors from 'cors';
     import bodyParser from 'body-parser';
     import * as dotenv from 'dotenv';
-    import { Administrator } from './administrator';
-    import { Certificate } from './Certificate';
-    import { Course } from './Course';
-    import { Platform } from './Platform';
-    import { Student } from './Student';
 
 /* Global Configs:
 ================================================================================*/

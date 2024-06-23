@@ -1,9 +1,9 @@
-import { Supabase } from "./supabase";
+import { SupabaseService } from "../services/SupabaseService";
 
-export class Platform {
+export class PlatformController {
     private supabase: any;
 
-    constructor(private Supabase: Supabase) {
+    constructor(private Supabase: SupabaseService) {
         this.supabase = Supabase.createdClient();
     }
 
