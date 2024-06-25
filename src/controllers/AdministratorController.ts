@@ -1,16 +1,21 @@
-import axios from "axios";
 import { SupabaseService } from "../services/SupabaseService";
+import { SendEmailService } from '../services/SendEmailService';
+import { createAdminPasswordEmail } from "../models/adminModels";
 
 export class AdministratorController {
     private supabase: any;
+    private supabaseService!: SupabaseService;
+    private sendEmailService!: SendEmailService;
 
-    constructor (private Supabase: SupabaseService) {
-        this.supabase = Supabase.createdClient();
-     }
+    constructor () {
+        this.supabaseService = SupabaseService.getInstance();
+        this.supabase = this.supabaseService.createdClient;
+        this.sendEmailService = SendEmailService.getInstance();
+    }
 
     /* Function to generate a random password:
     ===========================================================================*/
-        generateRandomPassword(length) {
+        generateRandomPassword(length: number): string {
             const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let password = '';
 
@@ -30,7 +35,7 @@ export class AdministratorController {
         - It will associate this new user data into the administrator database.
             -- With the email and email that comes like parameters.
     ===========================================================================*/
-        async createAdministrator(admName, admEmail) {
+        async createAdministrator(admName: string, admEmail: string) {
 
             /* Generate a random password for the new administrator:
             ===================================================================*/
@@ -84,7 +89,11 @@ export class AdministratorController {
     
     /* Function to send admin password by email:
     ===========================================================================*/
-        async sendAdminPass(admEmail, password) {
-                axios.post('https://api.sendgrid.com/v3/mail/send', {})
-        }
+        async sendAdminPass(admEmail: string, password: string) {
+            const subject = "Confluentia - Dados de Login de Administrador";
+            const html = createAdminPasswordEmail(password);
+            const to = admEmail;
+
+            this.sendEmailService.sendEmail(to, subject, html);
+        }        
 }
