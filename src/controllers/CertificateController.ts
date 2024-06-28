@@ -4,7 +4,7 @@ export class CertificateController {
     private supabase: any;
 
     constructor(private Supabase: SupabaseService) {
-        this.supabase = Supabase.createdClient();
+        this.supabase = this.Supabase.createdClient();
     }
 
     /* Creating a unique Certificate Code:

@@ -1,6 +1,6 @@
 import { SupabaseService } from "../services/SupabaseService";
 import { SendEmailService } from '../services/SendEmailService';
-import { createAdminPasswordEmail } from "../models/adminModels";
+import { adminModel, createdAdminPasswordEmail } from "../models/adminModels";
 import { emailDataModel } from "../models/emailDataModel";
 
 export class AdministratorController {
@@ -36,7 +36,10 @@ export class AdministratorController {
         - It will associate this new user data into the administrator database.
             -- With the email and email that comes like parameters.
     ===========================================================================*/
-        async createAdministrator(admName: string, admEmail: string) {
+        async createAdministrator(adminObj: adminModel) {
+            /* Setting role for admin:
+            ===================================================================*/
+                adminObj.role = 'administrator';
 
             /* Generate a random password for the new administrator:
             ===================================================================*/
@@ -47,12 +50,12 @@ export class AdministratorController {
                 - Using the password that its randomly generated.
             ===================================================================*/
                 const { data, error } = await this.supabase.auth.signUp({
-                    email: admEmail,
+                    email: adminObj.email,
                     password: password,
                 });
 
                 if (error) {
-                    return 'Error creating user:' + error.message;
+                    return `Error while creating user: ${error.message}`;
                 }
 
             /* If user creation is successful, insert data into adm table:
@@ -61,14 +64,14 @@ export class AdministratorController {
                 const { data: insertData, error: insertError } = await this.supabase
                     .from('users')
                     .insert([
-                        { name: admName, email: admEmail, phone: '', role: 'administrator' },
+                        { name: adminObj.name, email: adminObj.email, phone: adminObj.phone, role: adminObj.role },
                     ]);
 
                 if (insertError) {
                     return 'Error inserting administrator data:' + insertError.message;
 
                 } else {
-                    await this.sendAdminPass(admEmail, password);
+                    await this.sendAdminPass(adminObj.email, password);
                     return "Success creating administrator. \nData used: " + insertData;
                 }
         }
@@ -87,18 +90,76 @@ export class AdministratorController {
                 return data;
             }
         }
+
+    /* Function to return one admin by email:
+    ===========================================================================*/
+        async getAdmin(email: string) {
+            const { data, error } = await this.supabase
+                .from('users')
+                .select('*')
+                .eq('email', email)
+                .eq('role', 'administrator')
+                .single(); // Use .single() if you're expecting at most one record
+        
+            if (error) {
+                // Return an object with an error key if there's an error
+                return { error: error.message };
+            } else if (!data) {
+                // Handle the case where no matching data is found
+                return { error: 'No administrator found with the given name.' };
+            } else {
+                // Return an object with a data key if the fetch is successful
+                return { data };
+            }
+        }
     
     /* Function to send admin password by email:
     ===========================================================================*/
         async sendAdminPass(admEmail: string, password: string) {
+            const imgPath = "../../assets/images/confluentia_logo.svg";
             const emailData: Partial<emailDataModel> = {
                 to: admEmail,
                 subject: 'Confluentia - Dados de Login de Administrador',
-                html: createAdminPasswordEmail(password),
+                html: createdAdminPasswordEmail(password, imgPath),
             };
 
-            let returnedFeedback = this.sendEmailService.sendEmail(emailData);
+            return this.sendEmailService.sendEmail(emailData);
+        }
+        
+    /* Function to edit admin data on DB:
+    ===========================================================================*/
+        async updateAdmin(adminObj: adminModel) {
+            /* Setting role for admin:
+            ===================================================================*/
+                adminObj.role = 'administrator';
 
-            console.log(returnedFeedback);
-        }        
+            /* Updating data in supabase:
+            ===================================================================*/
+                const { data, error } = await this.supabase
+                   .from('users')
+                   .update(adminObj)
+                   .eq('email', adminObj.email)
+                   .single();
+
+                if (error) {
+                    return { error: error.message };
+                } else {
+                    return data;
+                }
+        }
+
+    /* Function to delete admin data from DB:
+    ===========================================================================*/
+        async deleteAdmin(email: string) {
+            const { data, error } = await this.supabase
+               .from('users')
+               .delete()
+               .eq('email', email);
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }   
 }
