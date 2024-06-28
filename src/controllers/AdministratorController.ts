@@ -1,6 +1,7 @@
 import { SupabaseService } from "../services/SupabaseService";
 import { SendEmailService } from '../services/SendEmailService';
 import { createAdminPasswordEmail } from "../models/adminModels";
+import { emailDataModel } from "../models/emailDataModel";
 
 export class AdministratorController {
     private supabase: any;
@@ -90,10 +91,14 @@ export class AdministratorController {
     /* Function to send admin password by email:
     ===========================================================================*/
         async sendAdminPass(admEmail: string, password: string) {
-            const subject = "Confluentia - Dados de Login de Administrador";
-            const html = createAdminPasswordEmail(password);
-            const to = admEmail;
+            const emailData: Partial<emailDataModel> = {
+                to: admEmail,
+                subject: 'Confluentia - Dados de Login de Administrador',
+                html: createAdminPasswordEmail(password),
+            };
 
-            this.sendEmailService.sendEmail(to, subject, html);
+            let returnedFeedback = this.sendEmailService.sendEmail(emailData);
+
+            console.log(returnedFeedback);
         }        
 }

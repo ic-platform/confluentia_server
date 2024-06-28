@@ -1,65 +1,69 @@
-import nodemailer from 'nodemailer';
-import { google } from 'googleapis';
-import dotenv from 'dotenv';
-import { emailDataModel } from '../models/emailDataModel';
+/* Imports:
+================================================================================*/
+    import nodemailer, { Transporter } from 'nodemailer';
+    import dotenv from 'dotenv';
+    import { emailDataModel, oAuthDataModel } from '../models/emailDataModel';
 
-dotenv.config();
+/* Setting Dotenv:
+================================================================================*/
+    dotenv.config();
 
-export class SendEmailService {
-    private static instance: SendEmailService;
-    private transporter: nodemailer.Transporter;
-    private oauth2Client: any;
+/* Class:
+================================================================================*/
+    export class SendEmailService {
+        /* Constructor:
+        ========================================================================*/
+            constructor() {}
 
-    private constructor() {
-        this.oauth2Client = new google.auth.OAuth2(
-            process.env.OAUTH_CLIENTID,
-            process.env.OAUTH_CLIENT_SECRET,
-            "https://developers.google.com/oauthplayground" // Redirect URL
-        );
+        /* Singleton Instance for Class:
+        ========================================================================*/
+            private static instance: SendEmailService;
+        
+            static getInstance() {
+                if (!SendEmailService.instance) {
+                    SendEmailService.instance = new SendEmailService();
+                }
+                return SendEmailService.instance;
+            }
 
-        this.oauth2Client.setCredentials({
-            refresh_token: process.env.OAUTH_REFRESH_TOKEN
-        });
-
-        this.transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
+        /* OAuth2 Configuration:
+        ========================================================================*/
+            private oAuth2Config: oAuthDataModel = {
                 type: 'OAuth2',
-                user: process.env.MAIL_USERNAME,
-                clientId: process.env.OAUTH_CLIENTID,
-                clientSecret: process.env.OAUTH_CLIENT_SECRET,
-                refreshToken: process.env.OAUTH_REFRESH_TOKEN,
-                accessToken: this.getAccessToken(),
-            },
-        });
+                user: process.env.EMAIL_USER || '',
+                clientId: process.env.CLIENT_ID || '',
+                clientSecret: process.env.CLIENT_SECRET || '',
+                refreshToken: process.env.REFRESH_TOKEN || ''
+                // accessToken will be obtained by nodemailer when needed.
+            }
+
+        /* Setting SMTP Configuration for Gmail:
+        ========================================================================*/
+            private transporter: Transporter = nodemailer.createTransport({
+                //@ts-ignore
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
+                auth: this.oAuth2Config
+            });
+
+        /* Default Partial Email Data:
+        ========================================================================*/
+            private emailData: Partial<emailDataModel> = {
+                from: process.env.EMAIL_USER || ''
+            }
+        
+        /* Function to send an email:
+        ========================================================================*/
+            public async sendEmail(emailData: Partial<emailDataModel>) {
+                const email = { ...this.emailData, ...emailData };
+
+                try {
+                    const info = await this.transporter.sendMail(email);
+                    return 'Message sent: %s' + info.messageId;
+
+                } catch (error) {
+                    return 'Error sending email: %s' + error;
+                }
+            }
     }
-
-    private getAccessToken() {
-        const accessToken = this.oauth2Client.getAccessToken();
-        return accessToken;
-    }
-
-    public static getInstance(): SendEmailService {
-        if (!SendEmailService.instance) {
-            SendEmailService.instance = new SendEmailService();
-        }
-
-        return SendEmailService.instance;
-    }
-
-    public async sendEmail(emailData: Partial<emailDataModel>) {
-        const defaultEmailData: Partial<emailDataModel> = {
-            from: "Confluentia <icplatform.fumec@gmail.com>"
-        };
-
-        const mailOptions = { ...defaultEmailData, ...emailData };
-
-        try {
-            const info = await this.transporter.sendMail(mailOptions);
-            return info;
-        } catch (error) {
-            console.error('Error sending email:', error);
-            throw error;
-        }
-    }
-}

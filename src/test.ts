@@ -3,4 +3,4 @@ import { AdministratorController } from './controllers/AdministratorController';
 
 const controller = new AdministratorController(); // Create a new instance of the 'AdministratorController' class
 
-controller.sendAdminPass("gui2012451@gmail.com", "1234567890");
+controller.sendAdminPass("icplatform.fumec@gmail.com", "1234567890");
