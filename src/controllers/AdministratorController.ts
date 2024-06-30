@@ -1,7 +1,7 @@
 import { SupabaseService } from "../services/SupabaseService";
 import { SendEmailService } from '../services/SendEmailService';
 import { adminModel, createdAdminPasswordEmail } from "../models/adminModels";
-import { emailDataModel } from "../models/emailDataModel";
+import { emailDataModel } from "../models/emailDataModels";
 
 export class AdministratorController {
     private supabase: any;

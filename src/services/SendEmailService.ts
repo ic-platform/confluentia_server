@@ -2,7 +2,7 @@
 ================================================================================*/
     import nodemailer, { Transporter } from 'nodemailer';
     import dotenv from 'dotenv';
-    import { emailDataModel, oAuthDataModel } from '../models/emailDataModel';
+    import { emailDataModel, oAuthDataModel } from '../models/emailDataModels';
 
 /* Setting Dotenv:
 ================================================================================*/
