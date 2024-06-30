@@ -1,11 +1,23 @@
 import { SupabaseService } from "../services/SupabaseService";
+import { courseModel, lessonsModel, levelsModel, moduleModel } from '../models/courseModels';
 
 export class CourseController {
     private supabase: any;
+    private supabaseService!: SupabaseService;
 
-    constructor(private Supabase: SupabaseService) {
-        this.supabase = Supabase.createdClient();
-    }
+    /* Global Variables:
+    ===========================================================================*/
+        levels!: levelsModel[];
+    
+    /* Constructor:
+    ===========================================================================*/
+        constructor() {
+            this.supabaseService = SupabaseService.getInstance();
+            this.supabase = this.supabaseService.createdClient();
+            this.getLevels().then(levels => {
+                this.levels = levels;
+            });
+        }
 
     /* Creating a Course:
         - courseName: Course name.
@@ -14,14 +26,15 @@ export class CourseController {
         - description: Description of the course.
         - tags: Array of tags associated with the course.
     ===========================================================================*/
-        async createCourse(courseName, duration, levelId, description, tags) {
+        async createCourse( courseObj: courseModel ) {
             const { data, error } = await this.supabase
                 .from('courses')
-                .insert([{ courseName, duration, levelId, description, tags }])
+                .insert([{ courseName: courseObj.courseName, duration: courseObj.duration, levelId: courseObj.levelId, description: courseObj.description, tags: courseObj.tags }])
                 .single();
             
             if (error) {
                 return { error: error.message };
+
             } else {
                 return data;
             }
@@ -47,11 +60,32 @@ export class CourseController {
     /* Creating a New Module:
         - moduleName: Name of the module.
         - courseId: Id of the course to which the module belongs.
+        - totalLessons: Number of lessons in the module.
     ===========================================================================*/
-        async createModule(moduleName, courseId) {
+        async createModule( moduleObj: moduleModel ) {
             const { data, error } = await this.supabase
                 .from('modules')
-                .insert([{ moduleName, courseId }])
+                .insert([{ name: moduleObj.moduleName, courseid: moduleObj.courseId, total_lessons: moduleObj.totalLessons }])
+                .single();
+            
+            if (error) {
+                return { error: error.message };
+
+            } else {
+                return data;
+            }
+        }
+
+    /* Creating a New Lesson:
+        - Name: Name of the lesson.
+        - Description: Description of the lesson.
+        - resourcesURL: array of URLs of the resources for the lesson.
+        - moduleId: Id of the module to which the lesson belongs.
+    ===========================================================================*/
+        async createLesson( lessonObj:lessonsModel ) {
+            const { data, error } = await this.supabase
+                .from('lessons')
+                .insert([{ name: lessonObj.lessonName, description: lessonObj.description, resources_url: lessonObj.lessonUrl, moduleid: lessonObj.moduleId, lesson_url: lessonObj.lessonUrl }])
                 .single();
             
             if (error) {
@@ -61,19 +95,131 @@ export class CourseController {
             }
         }
 
-
-    /* Creating a New Lesson:
-        - Name: Name of the lesson.
-        - Description: Description of the lesson.
-        - resourcesURL: array of URLs of the resources for the lesson.
-        - moduleId: Id of the module to which the lesson belongs.
+    /* Updating a Course:
+        - courseId: ID of the course to update.
+        - updateObj: Object containing the fields to update.
     ===========================================================================*/
-        async createLesson(name, description, resourcesURL, moduleId) {
+        async updateCourse(courseId: number, updateObj: Partial<courseModel>) {
+            const { data, error } = await this.supabase
+                .from('courses')
+                .update(updateObj)
+                .match({ id: courseId });
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+
+    /* Deleting a Course:
+        - courseId: ID of the course to delete.
+    ===========================================================================*/
+        async deleteCourse(courseId: number) {
+            const { data, error } = await this.supabase
+                .from('courses')
+                .delete()
+                .match({ id: courseId });
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+
+    /* Updating a Module:
+        - moduleId: ID of the module to update.
+        - updateObj: Object containing the fields to update.
+    ===========================================================================*/
+        async updateModule(moduleId: number, updateObj: Partial<moduleModel>) {
+            const { data, error } = await this.supabase
+                .from('modules')
+                .update(updateObj)
+                .match({ id: moduleId });
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+
+    /* Deleting a Module:
+        - moduleId: ID of the module to delete.
+    ===========================================================================*/
+        async deleteModule(moduleId: number) {
+            const { data, error } = await this.supabase
+                .from('modules')
+                .delete()
+                .match({ id: moduleId });
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+
+    /* Updating a Lesson:
+        - lessonId: ID of the lesson to update.
+        - updateObj: Object containing the fields to update.
+    ===========================================================================*/
+        async updateLesson(lessonId: number, updateObj: Partial<lessonsModel>) {
             const { data, error } = await this.supabase
                 .from('lessons')
-                .insert([{ name, description, resourcesURL, moduleId }])
-                .single();
-            
+                .update(updateObj)
+                .match({ id: lessonId });
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+
+    /* Deleting a Lesson:
+        - lessonId: ID of the lesson to delete.
+    ===========================================================================*/
+        async deleteLesson(lessonId: number) {
+            const { data, error } = await this.supabase
+                .from('lessons')
+                .delete()
+                .match({ id: lessonId });
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+
+    /* Updating a Level:
+        - levelId: ID of the level to update.
+        - updateObj: Object containing the fields to update.
+    ===========================================================================*/
+        async updateLevel(levelId: number, updateObj: Partial<levelsModel>) {
+            const { data, error } = await this.supabase
+                .from('levels')
+                .update(updateObj)
+                .match({ id_level: levelId });
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+
+    /* Deleting a Level:
+        - levelId: ID of the level to delete.
+    ===========================================================================*/
+        async deleteLevel(levelId: number) {
+            const { data, error } = await this.supabase
+                .from('levels')
+                .delete()
+                .match({ id_level: levelId });
+
             if (error) {
                 return { error: error.message };
             } else {
