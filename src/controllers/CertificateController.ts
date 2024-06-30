@@ -1,11 +1,21 @@
-import { SupabaseService } from "../services/SupabaseService";
+import { partialCertificateModel, createCertificateModel, completeCertificateModel } from '../models/certificateModels';
+import { SupabaseService } from '../services/SupabaseService';
 
 export class CertificateController {
     private supabase: any;
+    private supabaseService!: SupabaseService;
 
-    constructor(private Supabase: SupabaseService) {
-        this.supabase = this.Supabase.createdClient();
+    constructor() {
+        this.supabaseService = SupabaseService.getInstance();
+        this.supabase = this.supabaseService.createdClient;
     }
+
+    /* Defining the default certificate model:
+    ===========================================================================*/
+        private defaultElements: Partial<partialCertificateModel> = {
+            platform: 'confluentia',
+            university: 'fumec'
+        }
 
     /* Creating a unique Certificate Code:
         - platform: 'confluentia'
@@ -14,64 +24,91 @@ export class CertificateController {
         - courseId: Id of the course to which the certificate is associated
         - studentId: Id of the student to whom the certificate belongs
     ===========================================================================*/
-    generateCertificateCode(platform: string, university: string, date: string, courseId: number, studentId: number): string {
-        return `${platform}_${university}_${date}_${courseId}_${studentId}`;
-    }
+        private generateCertificateCode(certificateElements: partialCertificateModel): string {
+            return `${certificateElements.platform}_${certificateElements.university}_${certificateElements.date}_${certificateElements.courseId}_${certificateElements.studentId}`;
+        }
 
     /* Creating a Certificate:
         - studentId: Id of the student to whom the certificate belongs
         - courseId: Id of the course to which the certificate is associated
     ===========================================================================*/
-    async createCertificate(studentId: number, courseId: number) {
-        const platform = 'confluentia';
-        const university = 'fumec';
-        const date = new Date().toISOString().split('T')[0].replace(/-/g, ''); // YYYYMMDD format
+        async createCertificate(createCertificateModel: createCertificateModel) {
+            const date = new Date().toISOString().split('T')[0].replace(/-/g, ''); // YYYYMMDD format
 
-        const certificateCode = this.generateCertificateCode(platform, university, date, courseId, studentId);
+            const certificateElements: partialCertificateModel = {
+                ...this.defaultElements,
+                date: date,
+                ...createCertificateModel
+            }
 
-        const { data, error } = await this.supabase
-            .from('certificates')
-            .insert([{ studentId, courseId, certificateCode }])
-            .single();
+            const completeCertificate: completeCertificateModel = {
+                ...certificateElements,
+                certificateCode: this.generateCertificateCode(certificateElements)
+            };
 
-        if (error) {
-            return { error: error.message };
-        } else {
-            return data;
+            const { data, error } = await this.supabase
+                .from('certificates')
+                .insert([{ studentId: completeCertificate.studentId, courseId: completeCertificate.courseId, certificateCode: completeCertificate.certificateCode }])
+                .single();
+
+            if (error) {
+                return { error: error.message };
+
+            } else {
+                return data;
+            }
         }
-    }
 
     /* Fetching Certificates by Student ID:
         - studentId: Id of the student whose certificates are to be fetched
         - Returns a list of certificates associated with the student
     ===========================================================================*/
-    async getCertificatesByStudentId(studentId: number) {
-        const { data, error } = await this.supabase
-            .from('certificates')
-            .select('*')
-            .eq('studentId', studentId);
+        async getCertificatesByStudentId(studentId: number) {
+            const { data, error } = await this.supabase
+                .from('certificates')
+                .select('*')
+                .eq('studentId', studentId);
 
-        if (error) {
-            return { error: error.message };
-        } else {
-            return data;
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
         }
-    }
 
     /* Fetching Certificates by Course ID:
         - courseId: Id of the course whose certificates are to be fetched
         - Returns a list of certificates associated with the course
     ===========================================================================*/
-    async getCertificatesByCourseId(courseId: number) {
-        const { data, error } = await this.supabase
-            .from('certificates')
-            .select('*')
-            .eq('courseId', courseId);
+        async getCertificatesByCourseId(courseId: number) {
+            const { data, error } = await this.supabase
+                .from('certificates')
+                .select('*')
+                .eq('courseId', courseId);
 
-        if (error) {
-            return { error: error.message };
-        } else {
-            return data;
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
         }
-    }
+
+    /* Fetching Certificate by Certificate Code:
+        - certificateCode: Code of the certificate to be fetched
+        - Returns a single certificate associated with the code
+    ===========================================================================*/
+        async getCertificateByCode(certificateCode: string) {
+            const { data, error } = await this.supabase
+                .from('certificates')
+                .select('*')
+                .eq('certificateCode', certificateCode)
+                .single();
+
+            if (error) {
+                return { error: error.message };
+
+            } else {
+                return data;
+            }
+        }
 }

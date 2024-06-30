@@ -1,11 +1,13 @@
 import { createStudentModel, editStudentModel } from "../models/studentModels";
-import { SupabaseService } from "../services/SupabaseService";
+import { SupabaseService } from '../services/SupabaseService';
 
 export class StudentController {
     private supabase: any;
+    private supabaseService!: SupabaseService;
 
-    constructor(private Supabase: SupabaseService) {
-        this.supabase = Supabase.createdClient();
+    constructor() {
+        this.supabaseService = SupabaseService.getInstance();
+        this.supabase = this.supabaseService.createdClient;
     }
 
     /* Creating a Student:
