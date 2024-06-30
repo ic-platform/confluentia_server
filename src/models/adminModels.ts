@@ -37,6 +37,9 @@
                     text-align: center;
                     padding: 10px 0;
                 }
+                .header img {
+                    padding-bottom: 20px;
+                }
                 .header h1 {
                     margin: 0;
                     font-size: 24px;
@@ -72,6 +75,7 @@
                     <p>Olá,</p>
                     <p>Você foi adicionado como administrador na plataforma Confluentia da FUMEC.</p>
                     <p>Segue abaixo sua senha inicial de acesso a plataforma 👇</p>
+                    <br>
                     <p class="pass-color"><strong>${password}</strong></p>
                 </div>
                 <div class="footer">

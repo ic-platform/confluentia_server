@@ -116,7 +116,7 @@ export class AdministratorController {
     /* Function to send admin password by email:
     ===========================================================================*/
         async sendAdminPass(admEmail: string, password: string) {
-            const imgPath = "../../assets/images/confluentia_logo.svg";
+            const imgPath = "https://github.com/ic-platform/confluentia/blob/henry-alt/src/assets/images/App%20Icons%20PNG/256x256.png?raw=true";
             const emailData: Partial<emailDataModel> = {
                 to: admEmail,
                 subject: 'Confluentia - Dados de Login de Administrador',
