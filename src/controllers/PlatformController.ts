@@ -1,201 +1,254 @@
+import { carrosselModel, meetUsDescriptionModel, meetUsModel, teamModel, termsOfUseModel } from "../models/platformModels";
 import { SupabaseService } from "../services/SupabaseService";
 
 export class PlatformController {
     private supabase: any;
+    private supabaseService!: SupabaseService;
 
     constructor(private Supabase: SupabaseService) {
-        this.supabase = Supabase.createdClient();
+        this.supabaseService = SupabaseService.getInstance();
+        this.supabase = this.supabaseService.createdClient;
     }
 
     /* Carrossel Table Operations
     ===========================================================================*/
-        /* Select all carrossel entries
-        =======================================================================*/
-            async getAllCarrossel() {
-                const { data, error } = await this.supabase
-                    .from('carrossel')
-                    .select('*');
+        async getAllCarrossel() {
+            const { data, error } = await this.supabase
+                .from('carrossel')
+                .select('*');
 
-                if (error) {
-                    return { error: error.message };
-                } else {
-                    return data;
-                }
+            if (error) {
+                return { error: error.message };
+
+            } else {
+                return data;
             }
+        }
 
-        /* Update a carrossel entry by id
-        =======================================================================*/
-            async updateCarrossel(id: number, updates: any) {
-                const { data, error } = await this.supabase
-                    .from('carrossel')
-                    .update(updates)
-                    .eq('id', id)
-                    .single();
+        async updateCarrossel(carrosselId: number, carrosselObj:carrosselModel) {
+            const { data, error } = await this.supabase
+                .from('carrossel')
+                .update(carrosselObj)
+                .match({ id: carrosselId})
 
-                if (error) {
-                    return { error: error.message };
-                } else {
-                    return data;
-                }
+            if (error) {
+                return { error: error.message };
+
+            } else {
+                return data;
             }
+        }
 
-        /* Delete a carrossel entry by id
-        =======================================================================*/
-            async deleteCarrossel(id: number) {
-                const { data, error } = await this.supabase
-                    .from('carrossel')
-                    .delete()
-                    .eq('id', id);
+        async deleteCarrossel(carrosselId: number) {
+            const { data, error } = await this.supabase
+                .from('carrossel')
+                .delete()
+                .match({ id: carrosselId });
 
-                if (error) {
-                    return { error: error.message };
-                } else {
-                    return data;
-                }
+            if (error) {
+                return { error: error.message };
+
+            } else {
+                return data;
             }
+        }
+
+        async createCarrossel(carrosselObj: carrosselModel) {
+            const { data, error } = await this.supabase
+                .from('carrossel')
+                .insert([carrosselObj]);
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
 
     /* Meet Us Table Operations
     ===========================================================================*/
-        /* Select the meet us entry
-        =======================================================================*/
-            async getMeetUs() {
-                const { data, error } = await this.supabase
-                    .from('meet_us')
-                    .select('*')
-                    .single();
+        async getMeetUs() {
+            const { data, error } = await this.supabase
+                .from('meet_us')
+                .select('*')
+                .single();
 
-                if (error) {
-                    return { error: error.message };
-                } else {
-                    return data;
-                }
+            if (error) {
+                return { error: error.message };
+
+            } else {
+                return data;
             }
+        }
 
-        /* Update the meet us entry
-        =======================================================================*/
-            async updateMeetUs(updates: any) {
-                const { data, error } = await this.supabase
-                    .from('meet_us')
-                    .update(updates)
-                    .eq('id', 1)
-                    .single();  // Assuming there's only one meet_us entry
+        async updateMeetUs(meetUsObj: meetUsModel) {
+            const { data, error } = await this.supabase
+                .from('meet_us')
+                .update(meetUsObj)
+                .match({ id: 1 });
 
-                if (error) {
-                    return { error: error.message };
-                } else {
-                    return data;
-                }
+            if (error) {
+                return { error: error.message };
+                
+            } else {
+                return data;
             }
+        }
 
-        /* Delete the meet us entry
-        =======================================================================*/
-            async deleteMeetUs() {
-                const { data, error } = await this.supabase
-                    .from('meet_us')
-                    .delete()
-                    .eq('id', 1);  // Assuming there's only one meet_us entry
-
-                if (error) {
-                    return { error: error.message };
+        async updateMeetUsDescription(meetUsObj: meetUsDescriptionModel) {
+            const defineDescription = () => {
+                if (meetUsObj.description_num === 1) {
+                    return { description_1: meetUsObj.description };
                 } else {
-                    return data;
+                    return { description_2: meetUsObj.description };
                 }
+            };
+        
+            const updateObject = defineDescription();
+        
+            const { data, error } = await this.supabase
+                .from('meet_us')
+                .update(updateObject)
+                .match({ id: 1 });
+        
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
             }
+        }
+
+        async deleteMeetUs() {
+            const { data, error } = await this.supabase
+                .from('meet_us')
+                .delete()
+                .eq('id', 1);
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+
+        async createMeetUs(meetUsObj: meetUsModel) {
+            const { data, error } = await this.supabase
+                .from('meet_us')
+                .insert([meetUsObj]);
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
 
     /* Team Table Operations
     ===========================================================================*/
+        async getTeam() {
+            const { data, error } = await this.supabase
+                .from('team')
+                .select('*');
 
-        /* Select all people entries
-        =======================================================================*/
-            async getAllPeople() {
-                const { data, error } = await this.supabase
-                    .from('people')
-                    .select('*');
-
-                if (error) {
-                    return { error: error.message };
-                } else {
-                    return data;
-                }
+            if (error) {
+                return { error: error.message };
+                
+            } else {
+                return data;
             }
+        }
 
-        /* Update a person entry by id
-        =======================================================================*/
-            async updatePerson(id: number, updates: any) {
-                const { data, error } = await this.supabase
-                    .from('people')
-                    .update(updates)
-                    .eq('id', id)
-                    .single();
+        async updatePersonTeam(id: number, teamObj: teamModel) {
+            const { data, error } = await this.supabase
+                .from('team')
+                .update(teamObj)
+                .match({ id: id })
 
-                if (error) {
-                    return { error: error.message };
-                } else {
-                    return data;
-                }
+            if (error) {
+                return { error: error.message };
+
+            } else {
+                return data;
             }
+        }
 
-        /* Delete a person entry by id
-        =======================================================================*/
-            async deletePerson(id: number) {
-                const { data, error } = await this.supabase
-                    .from('people')
-                    .delete()
-                    .eq('id', id);
+        async deletePersonTeam(id: number) {
+            const { data, error } = await this.supabase
+                .from('team')
+                .delete()
+                .match({ id: id })
 
-                if (error) {
-                    return { error: error.message };
-                } else {
-                    return data;
-                }
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
             }
+        }
+
+        async createPersonTeam(teamObj: teamModel) {
+            const { data, error } = await this.supabase
+                .from('team')
+                .insert([teamObj]);
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
 
     /* Terms of Use Table Operations
     ===========================================================================*/
+        async getTermsOfUse() {
+            const { data, error } = await this.supabase
+                .from('terms_of_use')
+                .select('*')
+                .single();
 
-        /* Select the terms of use entry
-        =======================================================================*/
-            async getTermsOfUse() {
-                const { data, error } = await this.supabase
-                    .from('terms_of_use')
-                    .select('*')
-                    .single();
+            if (error) {
+                return { error: error.message };
 
-                if (error) {
-                    return { error: error.message };
-                } else {
-                    return data;
-                }
+            } else {
+                return data;
             }
+        }
 
-        /* Update the terms of use entry
-        =======================================================================*/
-            async updateTermsOfUse(updates: any) {
-                const { data, error } = await this.supabase
-                    .from('terms_of_use')
-                    .update(updates)
-                    .eq('id', 1)
-                    .single();  // Assuming there's only one terms_of_use entry
+        async updateTermsOfUse(termsOfUseObj: termsOfUseModel) {
+            const { data, error } = await this.supabase
+                .from('terms_of_use')
+                .update(termsOfUseObj)
+                .eq('id', 1);
 
-                if (error) {
-                    return { error: error.message };
-                } else {
-                    return data;
-                }
+            if (error) {
+                return { error: error.message };
+                
+            } else {
+                return data;
             }
+        }
 
-        /* Delete the terms of use entry
-        =======================================================================*/
-            async deleteTermsOfUse() {
-                const { data, error } = await this.supabase
-                    .from('terms_of_use')
-                    .delete()
-                    .eq('id', 1);  // Assuming there's only one terms_of_use entry
+        async deleteTermsOfUse() {
+            const { data, error } = await this.supabase
+                .from('terms_of_use')
+                .delete()
+                .eq('id', 1);
 
-                if (error) {
-                    return { error: error.message };
-                } else {
-                    return data;
-                }
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
             }
+        }
+
+        async createTermsOfUse(termsOfUseObj: termsOfUseModel) {
+            const { data, error } = await this.supabase
+                .from('terms_of_use')
+                .insert([termsOfUseObj]);
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
 }

@@ -103,10 +103,11 @@ export class CourseController {
             const { data, error } = await this.supabase
                 .from('courses')
                 .update(updateObj)
-                .match({ id: courseId });
+                .match({ courseid: courseId });
 
             if (error) {
                 return { error: error.message };
+
             } else {
                 return data;
             }
@@ -119,7 +120,7 @@ export class CourseController {
             const { data, error } = await this.supabase
                 .from('courses')
                 .delete()
-                .match({ id: courseId });
+                .match({ courseid: courseId });
 
             if (error) {
                 return { error: error.message };
@@ -136,7 +137,7 @@ export class CourseController {
             const { data, error } = await this.supabase
                 .from('modules')
                 .update(updateObj)
-                .match({ id: moduleId });
+                .match({ moduleid: moduleId });
 
             if (error) {
                 return { error: error.message };
@@ -152,7 +153,7 @@ export class CourseController {
             const { data, error } = await this.supabase
                 .from('modules')
                 .delete()
-                .match({ id: moduleId });
+                .match({ moduleid: moduleId });
 
             if (error) {
                 return { error: error.message };
@@ -169,10 +170,11 @@ export class CourseController {
             const { data, error } = await this.supabase
                 .from('lessons')
                 .update(updateObj)
-                .match({ id: lessonId });
+                .match({ lessonid: lessonId });
 
             if (error) {
                 return { error: error.message };
+
             } else {
                 return data;
             }
@@ -185,10 +187,11 @@ export class CourseController {
             const { data, error } = await this.supabase
                 .from('lessons')
                 .delete()
-                .match({ id: lessonId });
+                .match({ lessonid: lessonId });
 
             if (error) {
                 return { error: error.message };
+
             } else {
                 return data;
             }
@@ -206,6 +209,7 @@ export class CourseController {
 
             if (error) {
                 return { error: error.message };
+
             } else {
                 return data;
             }
@@ -222,6 +226,7 @@ export class CourseController {
 
             if (error) {
                 return { error: error.message };
+                
             } else {
                 return data;
             }
