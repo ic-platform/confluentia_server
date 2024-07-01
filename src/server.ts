@@ -1,8 +1,7 @@
 /* Imports:
 ================================================================================*/
-    import express from 'express';
+    import express, { NextFunction } from 'express';
     import cors from 'cors';
-    import bodyParser from 'body-parser';
     import * as dotenv from 'dotenv';
 
 /* Global Configs:
@@ -16,17 +15,13 @@
 
 /* App Config:
 ================================================================================*/
-    /* Body Parser:
-    ============================================================================*/
-        app.use(bodyParser.json());
-
     /* Cors Config:
     ============================================================================*/
         app.use(cors());
 
 /* Server Configuration:
 ================================================================================*/
-    /* Routes:
+    /* Routes Configuration:
     ============================================================================*/
         app.get('/', (req, res) => {
             res.send('Hello World!');
@@ -34,14 +29,14 @@
 
     /* Error Handler:
     ============================================================================*/
-        app.use((err, req, res, next) => {
+        app.use((err: any, req: express.Request, res: express.Response, next: NextFunction) => {
             console.error(err.stack);
             res.status(500).send('Something broke!');
         });
 
     /* Not Found Handler:
     ============================================================================*/
-        app.use((req, res, next) => {
+        app.use((req: express.Request, res: express.Response, next: NextFunction) => {
             res.status(404).send("Sorry can't find that!");
         });
 
