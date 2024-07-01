@@ -61,7 +61,7 @@ export class AdministratorController {
             /* If user creation is successful, insert data into adm table:
                 - Using the name and email that comes like parameters.
             ===================================================================*/
-                const { data: insertData, error: insertError } = await this.supabase
+                const { insertData, error: insertError } = await this.supabase
                     .from('users')
                     .insert([
                         { name: adminObj.name, email: adminObj.email, phone: adminObj.phone, role: adminObj.role },

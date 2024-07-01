@@ -3,6 +3,7 @@
     import express, { NextFunction } from 'express';
     import cors from 'cors';
     import * as dotenv from 'dotenv';
+    import adminRoutes  from "./routes/AdministratorRoutes";
 
 /* Global Configs:
 ================================================================================*/
@@ -26,6 +27,8 @@
         app.get('/', (req, res) => {
             res.send('Hello World!');
         });
+
+        app.use(adminRoutes);
 
     /* Error Handler:
     ============================================================================*/

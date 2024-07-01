@@ -6,18 +6,18 @@
 
 /* Global Variables:
 ================================================================================*/
-    const router = express.Router();
+    const adminRoutes = express.Router();
     const adminController = new AdministratorController();
 
 /* Uses Settings:
 ================================================================================*/
-    router.use(express.json());
+    adminRoutes.use(express.json());
 
 /* Routes Definitions:
 ================================================================================*/
     /* Route to create a new Administrator:
     ============================================================================*/
-        router.post('/admin', (req: express.Request, res: express.Response) => {
+        adminRoutes.post('/admin', (req: express.Request, res: express.Response) => {
             /* Extracting the adminObj from request body:
             ====================================================================*/
                 const adminObj: adminModel = req.body;
@@ -48,7 +48,7 @@
 
     /* Route to Get All Admin Users:
     ============================================================================*/
-        router.get('/admin', (req: express.Request, res: express.Response) => {
+        adminRoutes.get('/admin', (req: express.Request, res: express.Response) => {
             adminController.getAllAdministrators()
                 .then((result) => {
                     res.status(200).json(result);
@@ -60,7 +60,7 @@
 
     /* Route to Get an Admin User by email:
     ============================================================================*/
-        router.get('/admin/:email', (req: express.Request, res: express.Response) => {
+        adminRoutes.get('/admin/:email', (req: express.Request, res: express.Response) => {
             const email = req.params.email;
 
             adminController.getAdmin(email)
@@ -74,7 +74,7 @@
 
     /* Route to Update an Admin:
     ============================================================================*/
-        router.put('/admin', (req: express.Request, res: express.Response) => {
+        adminRoutes.put('/admin', (req: express.Request, res: express.Response) => {
             const adminObj: adminModel = req.body;
 
             adminController.updateAdmin(adminObj)
@@ -88,7 +88,7 @@
     
     /* Route to Delete an Admin:
     ============================================================================*/
-        router.delete('/admin/:email', (req: express.Request, res: express.Response) => {
+        adminRoutes.delete('/admin/:email', (req: express.Request, res: express.Response) => {
             const email = req.params.email;
 
             adminController.deleteAdmin(email)
@@ -99,3 +99,5 @@
                     res.status(500).json({ message: error });
                 });
         });
+
+export default adminRoutes;
