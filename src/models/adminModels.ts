@@ -4,7 +4,7 @@
         name: string;
         email: string;
         phone?: string;
-        role: string;
+        role?: string;
     }
     
 /* Created Admin Password Email:
