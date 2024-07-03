@@ -4,6 +4,7 @@
     import cors from 'cors';
     import * as dotenv from 'dotenv';
     import adminRoutes  from "./routes/AdministratorRoutes";
+    import courseRoutes from './routes/CourseRoutes';
 
 /* Global Configs:
 ================================================================================*/
@@ -29,6 +30,7 @@
         });
 
         app.use(adminRoutes);
+        app.use(courseRoutes);
 
     /* Error Handler:
     ============================================================================*/

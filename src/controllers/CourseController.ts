@@ -13,7 +13,7 @@ export class CourseController {
     ===========================================================================*/
         constructor() {
             this.supabaseService = SupabaseService.getInstance();
-            this.supabase = this.supabaseService.createdClient();
+            this.supabase = this.supabaseService.createdClient;
             this.getLevels().then(levels => {
                 this.levels = levels;
             });
@@ -227,6 +227,102 @@ export class CourseController {
             if (error) {
                 return { error: error.message };
                 
+            } else {
+                return data;
+            }
+        }
+
+    /* Getting all Courses:
+        - Returns all courses.
+    ===========================================================================*/
+        async getAllCourses() {
+            const { data, error } = await this.supabase
+                .from('courses')
+                .select('*');
+            
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+    
+    /* Getting course by id:
+        - courseId: ID of the course to get.
+    ===========================================================================*/
+        async getCourseById(courseId: number) {
+            const { data, error } = await this.supabase
+                .from('courses')
+                .select('*')
+                .eq('courseid', courseId)
+                .single();
+            
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+    
+    /* Getting all lessons:
+        - Returns all lessons.
+    ===========================================================================*/
+        async getAllLessons() {
+            const { data, error } = await this.supabase
+                .from('lessons')
+                .select('*');
+            
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+
+    /* Getting lesson by id:
+        - lessonId: ID of the lesson to get.
+    ===========================================================================*/
+        async getLessonById(lessonId: number) {
+            const { data, error } = await this.supabase
+                .from('lessons')
+                .select('*')
+                .eq('lessonid', lessonId)
+                .single();
+            
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+
+    /* Getting all modules:
+        - Returns all modules.
+    ===========================================================================*/
+        async getAllModules() {
+            const { data, error } = await this.supabase
+                .from('modules')
+                .select('*');
+            
+            if (error) {
+                return { error: error.message };
+            } else {
+                return data;
+            }
+        }
+
+    /* Getting module by id:
+        - moduleId: ID of the module to get.
+    ===========================================================================*/
+        async getModuleById(moduleId: number) {
+            const { data, error } = await this.supabase
+                .from('modules')
+                .select('*')
+                .eq('moduleid', moduleId)
+                .single();
+            
+            if (error) {
+                return { error: error.message };
             } else {
                 return data;
             }
