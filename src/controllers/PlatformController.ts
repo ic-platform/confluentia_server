@@ -5,7 +5,7 @@ export class PlatformController {
     private supabase: any;
     private supabaseService!: SupabaseService;
 
-    constructor(private Supabase: SupabaseService) {
+    constructor() {
         this.supabaseService = SupabaseService.getInstance();
         this.supabase = this.supabaseService.createdClient;
     }

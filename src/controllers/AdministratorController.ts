@@ -123,7 +123,7 @@ export class AdministratorController {
                 html: createdAdminPasswordEmail(password, imgPath),
             };
 
-            return this.sendEmailService.sendEmail(emailData);
+            return await this.sendEmailService.sendEmail(emailData);
         }
         
     /* Function to edit admin data on DB:

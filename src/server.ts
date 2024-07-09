@@ -5,6 +5,10 @@
     import * as dotenv from 'dotenv';
     import adminRoutes  from "./routes/AdministratorRoutes";
     import courseRoutes from './routes/CourseRoutes';
+import certificateRoutes from './routes/CertificateRoutes';
+import contactRoutes from './routes/ContactRoutes';
+import platformRoutes from './routes/PlatformRoutes';
+import studentRoutes from './routes/StudentRoutes';
 
 /* Global Configs:
 ================================================================================*/
@@ -26,11 +30,15 @@
     /* Routes Configuration:
     ============================================================================*/
         app.get('/', (req, res) => {
-            res.send('Hello World!');
+            res.send('Hello World! Welcome to Confluentia Server :)');
         });
 
         app.use(adminRoutes);
         app.use(courseRoutes);
+        app.use(certificateRoutes);
+        app.use(contactRoutes);
+        app.use(platformRoutes);
+        app.use(studentRoutes);
 
     /* Error Handler:
     ============================================================================*/
