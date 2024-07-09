@@ -15,40 +15,48 @@ export class StudentController {
         - Inserts the student data into the 'users' table with the role 'student'.
     ===========================================================================*/
         async createStudent(studentObj: createStudentModel) {
-            /* Defining the role into the received object:
-            =======================================================================*/
-                studentObj.role = 'student';
-
-            /* Create user in Supabase Auth using the email and provided password:
-            =======================================================================*/
-                const { data: authData, error: authError } = await this.supabase.auth.signUp({
-                    email: studentObj.email,
-                    password: studentObj.password,
-                });
-
-                if (authError) {
-                    return { success: false, message: 'Error creating user: ' + authError.message };
-                }
+            // Check if user already exists
+            const { data: existingUser, error: existingUserError } = await this.supabase
+                .from('users')
+                .select('email')
+                .eq('email', studentObj.email)
+                .single();
         
-            /* Insert student data into the 'users' table:
-            =======================================================================*/
-                const { data: insertData, error: insertError } = await this.supabase
-                    .from('users')
-                    .insert([{ name: studentObj.name, email: studentObj.email, phone: studentObj.phone, role: studentObj.role }])
-                    .single();
-            
-                if (insertError) {
-                    return { success: false, message: 'Error inserting student data: ' + insertError.message };
-
-                } else {
-                    // Return success status, access token, and inserted data
-                    return {
-                        success: true,
-                        accessToken: authData.session.access_token, // Ensure this is the correct path to the access token
-                        data: insertData,
-                        message: 'Student created successfully'
-                    };
-                }
+            if (existingUserError && existingUserError.message !== "No rows found") {
+                return { success: false, message: 'Error checking existing user: ' + existingUserError.message };
+            }
+        
+            if (existingUser) {
+                return { success: false, message: 'User already exists' };
+            }
+        
+            // User does not exist, proceed with creation
+            studentObj.role = 'student';
+        
+            const { data: authData, error: authError } = await this.supabase.auth.signUp({
+                email: studentObj.email,
+                password: studentObj.password,
+            });
+        
+            if (authError) {
+                return { success: false, message: 'Error creating user: ' + authError.message };
+            }
+        
+            const { data: insertData, error: insertError } = await this.supabase
+                .from('users')
+                .insert([{ name: studentObj.name, email: studentObj.email, phone: studentObj.phone, role: studentObj.role }])
+                .single();
+        
+            if (insertError) {
+                return { success: false, message: 'Error inserting student data: ' + insertError.message };
+            } else {
+                return {
+                    success: true,
+                    accessToken: authData.session.access_token, // Ensure this is the correct path to the access token
+                    data: insertData,
+                    message: 'Student created successfully'
+                };
+            }
         }
 
     /* Getting data of one student:
