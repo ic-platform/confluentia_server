@@ -10,6 +10,21 @@ export class PlatformController {
         this.supabase = this.supabaseService.createdClient;
     }
 
+    /* Log in user:
+    ===========================================================================*/
+        async loginUser(email: string, password: string) {
+            const { user, session, error } = await this.supabase.auth.signIn({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return { user, session };
+            }
+        }
+
     /* Carrossel Table Operations
     ===========================================================================*/
         async getAllCarrossel() {

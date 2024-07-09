@@ -5,6 +5,14 @@ import { carrosselModel, meetUsDescriptionModel, meetUsModel, teamModel, termsOf
 const platformRoutes = express.Router();
 const platformController = new PlatformController(); 
 
+// Login Routes:
+platformRoutes.post('/login', async (req, res) => {
+    const email = req.body.email as string;
+    const password = req.body.password as string;
+    const result = await platformController.loginUser(email, password);
+    res.json(result);
+});
+
 // Carrossel Routes
 platformRoutes.get('/carrossel', async (req, res) => {
     const result = await platformController.getAllCarrossel();
