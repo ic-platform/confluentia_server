@@ -24,7 +24,7 @@
     /* Cors Config:
     ============================================================================*/
         app.use(cors({
-            origin: ['http://localhost:4200', 'https://confluentia.vercel.app', 'https://confluentia-henry-alt.vercel.app/home', "https://confluentia-bela-alt.vercel.app/home", "https://confluentia-qa-testing.vercel.app/home"],
+            origin: ['http://localhost:4200', 'https://confluentia.vercel.app', 'https://confluentia-henry-alt.vercel.app', "https://confluentia-bela-alt.vercel.app", "https://confluentia-qa-testing.vercel.app"],
             methods: ['GET', 'POST', 'PUT', 'DELETE']
         }));
 
