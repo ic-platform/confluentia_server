@@ -24,6 +24,18 @@ export class PlatformController {
             }
         }
 
+    /* Log out user:
+    ===========================================================================*/
+        async logoutUser() {
+            const { error } = await this.supabase.auth.signOut();
+
+            if (error) {
+                return { error: error.message };
+            } else {
+                return { message: 'User logged out successfully' };
+            }
+        }
+
     /* Carrossel Table Operations
     ===========================================================================*/
         async getAllCarrossel() {
