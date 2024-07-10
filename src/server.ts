@@ -38,7 +38,8 @@
                 "https://confluentia-qa-testing.vercel.app",
                 "*"
             ],
-            methods: ['GET', 'POST', 'PUT', 'DELETE']
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin']
         }));
 
 /* Server Configuration:
