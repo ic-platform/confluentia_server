@@ -35,7 +35,9 @@
                 'https://confluentia.vercel.app', 
                 'https://confluentia-henry-alt.vercel.app', 
                 "https://confluentia-bela-alt.vercel.app", 
-                "https://confluentia-qa-testing.vercel.app"],
+                "https://confluentia-qa-testing.vercel.app",
+                "*"
+            ],
             methods: ['GET', 'POST', 'PUT', 'DELETE']
         }));
 
