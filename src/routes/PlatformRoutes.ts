@@ -12,6 +12,12 @@ platformRoutes.post('/login', async (req, res) => {
     res.json(result);
 });
 
+// Logout Routes:
+platformRoutes.get('/logout', async (req, res) => {
+    const result = await platformController.logoutUser();
+    res.json(result);
+});
+
 // Carrossel Routes
 platformRoutes.get('/carrossel', async (req, res) => {
     const result = await platformController.getAllCarrossel();
