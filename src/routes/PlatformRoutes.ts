@@ -7,8 +7,7 @@ const platformController = new PlatformController();
 
 // Login Routes:
 platformRoutes.post('/login', async (req, res) => {
-    const email = req.body.email as string;
-    const password = req.body.password as string;
+    const { email, password } = req.body;
     const result = await platformController.loginUser(email, password);
     res.json(result);
 });

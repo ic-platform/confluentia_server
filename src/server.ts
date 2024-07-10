@@ -21,10 +21,15 @@
 
 /* App Config:
 ================================================================================*/
+    /* Body Parser Config:
+    ============================================================================*/
+        app.use(express.json());
+        app.use(express.urlencoded({ extended: true }));
+        
     /* Cors Config:
     ============================================================================*/
         app.use(cors({
-            origin: ['http://localhost:4200', 'https://confluentia.vercel.app', 'https://confluentia-henry-alt.vercel.app', "https://confluentia-bela-alt.vercel.app", "https://confluentia-qa-testing.vercel.app"],
+            origin: ['http://localhost', 'https://confluentia.vercel.app', 'https://confluentia-henry-alt.vercel.app', "https://confluentia-bela-alt.vercel.app", "https://confluentia-qa-testing.vercel.app"],
             methods: ['GET', 'POST', 'PUT', 'DELETE']
         }));
 

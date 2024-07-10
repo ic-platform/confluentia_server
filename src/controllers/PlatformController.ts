@@ -13,15 +13,14 @@ export class PlatformController {
     /* Log in user:
     ===========================================================================*/
         async loginUser(email: string, password: string) {
-            const { user, session, error } = await this.supabase.auth.signIn({
-                email: email,
-                password: password,
-            });
+            const { data, error } = await this.supabase.auth.signInWithPassword(
+                { email: email, password: password }
+            );
 
             if (error) {
                 return { error: error.message };
             } else {
-                return { user, session };
+                return { data };
             }
         }
 
