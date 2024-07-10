@@ -5,10 +5,10 @@
     import * as dotenv from 'dotenv';
     import adminRoutes  from "./routes/AdministratorRoutes";
     import courseRoutes from './routes/CourseRoutes';
-import certificateRoutes from './routes/CertificateRoutes';
-import contactRoutes from './routes/ContactRoutes';
-import platformRoutes from './routes/PlatformRoutes';
-import studentRoutes from './routes/StudentRoutes';
+    import certificateRoutes from './routes/CertificateRoutes';
+    import contactRoutes from './routes/ContactRoutes';
+    import platformRoutes from './routes/PlatformRoutes';
+    import studentRoutes from './routes/StudentRoutes';
 
 /* Global Configs:
 ================================================================================*/
@@ -23,7 +23,10 @@ import studentRoutes from './routes/StudentRoutes';
 ================================================================================*/
     /* Cors Config:
     ============================================================================*/
-        app.use(cors());
+        app.use(cors({
+            origin: ['http://localhost:4200', 'https://confluentia.vercel.app', 'https://confluentia-henry-alt.vercel.app/home', "https://confluentia-bela-alt.vercel.app/home", "https://confluentia-qa-testing.vercel.app/home"],
+            methods: ['GET', 'POST', 'PUT', 'DELETE']
+        }));
 
 /* Server Configuration:
 ================================================================================*/
