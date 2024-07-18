@@ -11,53 +11,46 @@ export class StudentController {
     }
 
     /* Creating a Student:
-        - Creates the student user in Supabase Auth using the provided email and password.
+        - Receives the data from the Frontend and creates after successuflly checking if the user already exists and its created on auth.
         - Inserts the student data into the 'users' table with the role 'student'.
     ===========================================================================*/
         async createStudent(studentObj: createStudentModel) {
             // Check if user already exists
-            const { data: existingUser, error: existingUserError } = await this.supabase
-                .from('users')
-                .select('email')
-                .eq('email', studentObj.email)
-                .single();
-        
-            if (existingUserError && existingUserError.message !== "No rows found") {
-                return { success: false, message: 'Error checking existing user: ' + existingUserError.message };
-            }
-        
-            if (existingUser) {
-                return { success: false, message: 'User already exists' };
-            }
+                const { data: existingUser, error: existingUserError } = await this.supabase
+                    .from('users')
+                    .select('email')
+                    .eq('email', studentObj.email)
+                    .single();
+            
+                if (existingUserError && existingUserError.message !== "No rows found") {
+                    return { success: false, message: 'Error checking existing user: ' + existingUserError.message };
+                }
+            
+                if (existingUser) {
+                    return { success: false, message: 'User already exists' };
+                }
         
             // User does not exist, proceed with creation
-            studentObj.role = 'student';
-        
-            const { data: authData, error: authError } = await this.supabase.auth.signUp({
-                email: studentObj.email,
-                password: studentObj.password,
-            });
-        
-            if (authError) {
-                return { success: false, message: 'Error creating user: ' + authError.message };
-            }
-        
-            const { data: insertData, error: insertError } = await this.supabase
-                .from('users')
-                .insert([{ name: studentObj.name, email: studentObj.email, phone: studentObj.phone, role: studentObj.role }])
-                .single();
-        
-            if (insertError) {
-                return { success: false, message: 'Error inserting student data: ' + insertError.message };
-            } else {
-                return {
-                    success: true,
-                    accessToken: authData.session.access_token, // Ensure this is the correct path to the access token
-                    data: insertData,
-                    message: 'Student created successfully'
-                };
-            }
+                // Making sure that the role is correct associated:
+                    studentObj.role = 'student';
+                // Creating user:
+                    const { data: insertData, error: insertError } = await this.supabase
+                        .from('users')
+                        .insert([{ name: studentObj.name, email: studentObj.email, phone: studentObj.phone, role: studentObj.role }])
+                        .single();
+                
+                    if (insertError) {
+                        return { success: false, message: 'Error inserting student data: ' + insertError.message };
+                        
+                    } else {
+                        return {
+                            success: true,
+                            data: insertData,
+                            message: 'Student created successfully'
+                        };
+                    }
         }
+
 
     /* Getting data of one student:
         - name: The name of the student
