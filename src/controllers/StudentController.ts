@@ -40,7 +40,11 @@ export class StudentController {
                         .single();
                 
                     if (insertError) {
-                        return { success: false, message: 'Error inserting student data: ' + insertError.message };
+                        return { 
+                            success: false, 
+                            data: null,
+                            message: 'Error inserting student data: ' + insertError.message 
+                        };
                         
                     } else {
                         return {
