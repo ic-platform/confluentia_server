@@ -25,7 +25,7 @@ export class CertificateController {
         - studentId: Id of the student to whom the certificate belongs
     ===========================================================================*/
         private generateCertificateCode(certificateElements: partialCertificateModel): string {
-            return `${certificateElements.platform}_${certificateElements.university}_${certificateElements.date}_${certificateElements.courseId}_${certificateElements.studentId}`;
+            return `${certificateElements.platform}_${certificateElements.university}_ ${certificateElements.date}_${certificateElements.courseId}_${certificateElements.studentId}`;
         }
 
     /* Creating a Certificate:
